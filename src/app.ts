@@ -1,5 +1,6 @@
 import express, { type Application, type Request, type Response } from 'express';
 import { pool } from './db';
+import { categoriesRoute } from './modules/categories/categories.route';
 const app: Application = express();
 
 // Middleware
@@ -15,30 +16,6 @@ app.get('/', (req: Request, res: Response) => {
     });
 });
 
-app.post('/api/v1/categories', async (req: Request, res: Response) => {
-    try {
-        const { name, slug, description } = req.body;
-
-        const result = await pool.query(
-            `
-                INSERT INTO categories (name, slug, description) VALUES
-                ($1, $2, $3) RETURNING *
-            `,
-            [name, slug, description],
-        );
-
-        res.status(201).json({
-            success: true,
-            message: 'Category created successfully!!',
-            data: result.rows[0],
-        });
-    } catch (error: any) {
-        res.status(500).json({
-            success: false,
-            message: error?.message,
-            error: error,
-        });
-    }
-});
+app.use('/api/v1/categories', categoriesRoute);
 
 export default app;

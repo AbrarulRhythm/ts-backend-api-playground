@@ -11,7 +11,7 @@ export const intiDB = async () => {
             CREATE TABLE IF NOT EXISTS categories(
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(20) NOT NULL,
-                slug VARCHAR(40) NOT NUll,
+                slug VARCHAR(40) UNIQUE NOT NUll,
                 description VARCHAR(255),
                 status BOOLEAN DEFAULT false,
 
