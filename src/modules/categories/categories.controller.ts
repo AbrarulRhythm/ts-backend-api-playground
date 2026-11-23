@@ -44,7 +44,39 @@ const getAllCategories = async (req: Request, res: Response) => {
     }
 };
 
+// ---- Get Single Category ----
+const getSingleCategory = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        const result = await categoriesService.getSingleCategoryFronDB(id as string);
+
+        if (result.rowCount === 0) {
+            sendResponse(res, {
+                statusCode: 404,
+                success: false,
+                message: 'User not found!!',
+            });
+        }
+
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: 'Categories retrived successfully!!',
+            data: result.rows[0],
+        });
+    } catch (error: any) {
+        sendResponse(res, {
+            statusCode: 500,
+            success: false,
+            message: error?.message,
+            error: error,
+        });
+    }
+};
+
 export const categoriesController = {
     createCategory,
     getAllCategories,
+    getSingleCategory,
 };

@@ -25,7 +25,20 @@ const getAllCategoriesFromDB = async () => {
     return result;
 };
 
+// ---- Get Single Categories -----
+const getSingleCategoryFronDB = async (id: string) => {
+    const result = await pool.query(
+        `
+            SELECT * FROM categories WHERE id = $1
+        `,
+        [id],
+    );
+
+    return result;
+};
+
 export const categoriesService = {
     createCategoryIntoDB,
     getAllCategoriesFromDB,
+    getSingleCategoryFronDB,
 };
