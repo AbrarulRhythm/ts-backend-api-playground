@@ -48,21 +48,50 @@ const getAllCategories = async (req: Request, res: Response) => {
 const getSingleCategory = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-
         const result = await categoriesService.getSingleCategoryFronDB(id as string);
 
         if (result.rowCount === 0) {
             sendResponse(res, {
                 statusCode: 404,
                 success: false,
-                message: 'User not found!!',
+                message: 'Category not found!!',
             });
         }
 
         sendResponse(res, {
             statusCode: 200,
             success: true,
-            message: 'Categories retrived successfully!!',
+            message: 'Category retrived successfully!!',
+            data: result.rows[0],
+        });
+    } catch (error: any) {
+        sendResponse(res, {
+            statusCode: 500,
+            success: false,
+            message: error?.message,
+            error: error,
+        });
+    }
+};
+
+// ---- Update Category ----
+const updateCategory = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const result = await categoriesService.updateCategoryFromDB(req.body, id as string);
+
+        if (result.rowCount === 0) {
+            sendResponse(res, {
+                statusCode: 404,
+                success: false,
+                message: 'Category not found!!',
+            });
+        }
+
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: 'Category updated successfully!!',
             data: result.rows[0],
         });
     } catch (error: any) {
@@ -79,4 +108,5 @@ export const categoriesController = {
     createCategory,
     getAllCategories,
     getSingleCategory,
+    updateCategory,
 };

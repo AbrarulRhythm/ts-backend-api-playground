@@ -37,8 +37,29 @@ const getSingleCategoryFronDB = async (id: string) => {
     return result;
 };
 
+// ---- Update Categories -----
+const updateCategoryFromDB = async (payload: any, id: string) => {
+    const { name, slug, description, status } = payload;
+
+    const result = await pool.query(
+        `
+            UPDATE categories SET 
+            name = COALESCE($1, name),
+            slug = COALESCE($2, slug),
+            description = COALESCE($3, description),
+            status = COALESCE($4, status),
+            updated_at = NOW()
+            WHERE id = $5 RETURNING *
+        `,
+        [name ?? null, slug ?? null, description ?? null, status ?? null, id],
+    );
+
+    return result;
+};
+
 export const categoriesService = {
     createCategoryIntoDB,
     getAllCategoriesFromDB,
     getSingleCategoryFronDB,
+    updateCategoryFromDB,
 };
