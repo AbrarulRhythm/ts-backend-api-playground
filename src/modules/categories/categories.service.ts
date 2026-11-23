@@ -16,6 +16,16 @@ const createCategoryIntoDB = async (payload: ICategories) => {
     return result;
 };
 
+// ---- Get All Categories -----
+const getAllCategoriesFromDB = async () => {
+    const result = await pool.query(`
+        SELECT * FROM categories
+    `);
+
+    return result;
+};
+
 export const categoriesService = {
     createCategoryIntoDB,
+    getAllCategoriesFromDB,
 };

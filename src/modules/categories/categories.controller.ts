@@ -23,6 +23,28 @@ const createCategory = async (req: Request, res: Response) => {
     }
 };
 
+// ---- Get All Categories ----
+const getAllCategories = async (req: Request, res: Response) => {
+    try {
+        const result = await categoriesService.getAllCategoriesFromDB();
+
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: 'Categories retrived successfully!!',
+            data: result.rows,
+        });
+    } catch (error: any) {
+        sendResponse(res, {
+            statusCode: 500,
+            success: false,
+            message: error?.message,
+            error: error,
+        });
+    }
+};
+
 export const categoriesController = {
     createCategory,
+    getAllCategories,
 };
