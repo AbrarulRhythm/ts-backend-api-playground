@@ -57,9 +57,22 @@ const updateCategoryFromDB = async (payload: any, id: string) => {
     return result;
 };
 
+// ---- Delete Categories -----
+const deleteCategoryFromDB = async (id: string) => {
+    const result = await pool.query(
+        `
+            DELETE FROM categories WHERE id = $1
+        `,
+        [id],
+    );
+
+    return result;
+};
+
 export const categoriesService = {
     createCategoryIntoDB,
     getAllCategoriesFromDB,
     getSingleCategoryFronDB,
     updateCategoryFromDB,
+    deleteCategoryFromDB,
 };

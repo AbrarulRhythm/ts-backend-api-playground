@@ -104,9 +104,39 @@ const updateCategory = async (req: Request, res: Response) => {
     }
 };
 
+// ---- Delete Category ----
+const deleteCategory = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const result = await categoriesService.deleteCategoryFromDB(id as string);
+
+        if (result.rowCount === 0) {
+            sendResponse(res, {
+                statusCode: 404,
+                success: false,
+                message: 'Category not found!!',
+            });
+        }
+
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: 'Category deleted successfully!!',
+        });
+    } catch (error: any) {
+        sendResponse(res, {
+            statusCode: 500,
+            success: false,
+            message: error?.message,
+            error: error,
+        });
+    }
+};
+
 export const categoriesController = {
     createCategory,
     getAllCategories,
     getSingleCategory,
     updateCategory,
+    deleteCategory,
 };
