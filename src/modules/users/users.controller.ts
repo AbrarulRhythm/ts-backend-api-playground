@@ -22,6 +22,27 @@ const createUser = async (req: Request, res: Response) => {
     }
 };
 
+const getAllUser = async (req: Request, res: Response) => {
+    try {
+        const result = await usersService.getAllUsersFromDB();
+
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: 'User retrived successfully!!',
+            data: result.rows,
+        });
+    } catch (error: any) {
+        sendResponse(res, {
+            statusCode: 500,
+            success: false,
+            message: error?.message,
+            error: error,
+        });
+    }
+};
+
 export const usersController = {
     createUser,
+    getAllUser,
 };
