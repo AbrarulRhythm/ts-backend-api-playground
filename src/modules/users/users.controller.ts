@@ -42,7 +42,37 @@ const getAllUser = async (req: Request, res: Response) => {
     }
 };
 
+const getSingleUser = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const result = await usersService.getSingleUserFromDB(id as string);
+
+        if (result.rowCount === 0) {
+            sendResponse(res, {
+                statusCode: 404,
+                success: false,
+                message: 'User not found!!',
+            });
+        }
+
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: 'User retrived successfully!!',
+            data: result.rows[0],
+        });
+    } catch (error: any) {
+        sendResponse(res, {
+            statusCode: 500,
+            success: false,
+            message: error?.message,
+            error: error,
+        });
+    }
+};
+
 export const usersController = {
     createUser,
     getAllUser,
+    getSingleUser,
 };
