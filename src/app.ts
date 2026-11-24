@@ -1,6 +1,8 @@
 import express, { type Application, type Request, type Response } from 'express';
 import { pool } from './db';
 import { categoriesRoute } from './modules/categories/categories.route';
+import { authRoute } from './modules/auth/auth.route';
+import { userRoute } from './modules/users/users.route';
 const app: Application = express();
 
 // Middleware
@@ -17,5 +19,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/v1/categories', categoriesRoute);
+app.use('/api/v1/users', userRoute);
+app.use('/api/v1/auth', authRoute);
 
 export default app;
