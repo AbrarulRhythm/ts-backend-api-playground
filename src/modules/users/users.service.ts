@@ -1,5 +1,5 @@
 import { pool } from '../../db';
-import type { IUser } from './users.interface';
+import type { IUpdateUserPayload, IUser } from './users.interface';
 import bcrypt from 'bcryptjs';
 
 const createUserIntoDB = async (payload: IUser) => {
@@ -38,8 +38,33 @@ const getSingleUserFromDB = async (id: string) => {
     return result;
 };
 
+const updateUserFromDB = async (payload: IUpdateUserPayload, id: string) => {
+    const { name, email, password, role, status } = payload;
+
+    const result = await pool.query(
+        `
+            UPDATE users SET
+
+            name = COALESCE($1, name),
+            email = COALESCE($2, email),
+            password = COALESCE($3, password),
+            role = COALESCE($4, role),
+            status = COALESCE($5, status),
+
+            updated_at = NOW()
+
+            WHERE id = $6 RETURNING *
+        `,
+        [name ?? null, email ?? null, password ?? null, role ?? null, status ?? null, id],
+    );
+
+    delete result.rows[0].password;
+    return result;
+};
+
 export const usersService = {
     createUserIntoDB,
     getAllUsersFromDB,
     getSingleUserFromDB,
+    updateUserFromDB,
 };
