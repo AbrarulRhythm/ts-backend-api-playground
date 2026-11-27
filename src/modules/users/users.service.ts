@@ -1,22 +1,20 @@
 import { pool } from '../../db';
 import type { IUpdateUserPayload, IUser } from './users.interface';
 import bcrypt from 'bcryptjs';
+import { userRepository } from './users.repository';
+import AppError from '../../utils/AppError';
 
 const createUserIntoDB = async (payload: IUser) => {
     const { name, email, password, role, status } = payload;
 
+    const existingUser = await userRepository.findUserByEmail(email);
+    if (existingUser) {
+        throw new AppError(409, 'Email already registered!!!!!!!!!!!');
+    }
+
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const result = await pool.query(
-        `
-            INSERT INTO users (name, email, password, role, status) VALUES 
-            ($1, $2, $3, COALESCE($4, 'user'), COALESCE($5, true)) RETURNING *
-        `,
-        [name, email, hashPassword, role, status],
-    );
-
-    delete result.rows[0].password;
-    return result;
+    return await userRepository.createUser(name, email, hashPassword, role, status);
 };
 
 const getAllUsersFromDB = async () => {
